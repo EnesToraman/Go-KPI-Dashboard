@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-jwt/jwt"
 	"github.com/julienschmidt/httprouter"
 
@@ -23,16 +23,19 @@ var jwtKey = []byte("secret_key")
 
 func main() {
 	// Capture connection properties.
-	cfg := mysql.Config{
-		User:   os.Getenv("DBUSER"),
-		Passwd: os.Getenv("DBPASS"),
-		Net:    "tcp",
-		Addr:   "127.0.0.1:3306",
-		DBName: "airline",
-	}
+	// cfg := mysql.Config{
+	// 	User:   os.Getenv("DBUSER"),
+	// 	Passwd: os.Getenv("DBPASS"),
+	// 	Net:    "tcp",
+	// 	Addr:   "127.0.0.1:3306",
+	// 	DBName: "airline",
+	// }
+
+	dns := os.Getenv("DATABASE_URL")
+
 	// Get a database handle.
 	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
+	db, err = sql.Open("mysql", dns)
 	if err != nil {
 		log.Fatal(err)
 	}
