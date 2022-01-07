@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -37,7 +36,6 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	fmt.Println(role)
 	err = utils.CheckPassword(password, hashedPassword)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)

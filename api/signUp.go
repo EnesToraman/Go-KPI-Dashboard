@@ -26,11 +26,13 @@ func SignUp(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	hashedPassword, err := utils.HashPassword(pwd)
 	if err != nil {
 		fmt.Printf("CreateUser: %v", err)
+		return
 	}
 
 	db := config.DB()
 	_, err2 := db.Exec("INSERT INTO user (email, hashed_password, role) VALUES (?, ?, 'STAFF')", email, hashedPassword)
 	if err2 != nil {
 		fmt.Printf("CreateUser: %v", err2)
+		return
 	}
 }

@@ -17,6 +17,7 @@ func AuthUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	cookie, err := r.Cookie("token")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 	tokenStr := cookie.Value
 	claims := &model.Claims{}

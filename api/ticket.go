@@ -10,12 +10,13 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// GetTicketData retrieves the relevant data with join operations, then scans and returns.
 func GetTicketData(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	config.CORS(w, r)
-	var passenger model.TicketDataModel
-	var passengers []model.TicketDataModel
+	var ticketdata model.TicketDataModel
+	var ticketdatas []model.TicketDataModel
 	query := `
-	SELECT COUNT(t.passenger_id), SUM(t.price), t.class, f.dep_place, DATE(f.dep_time) AS date FROM ticket AS t
+	SELECT COUNT(t.ticket_id), t.class, f.dep_place, DATE(f.dep_time) AS date FROM ticket AS t
 	INNER JOIN flight AS f ON t.flight_id = f.flight_id
     GROUP BY date, dep_place, class
     ORDER BY date
@@ -25,15 +26,18 @@ func GetTicketData(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 	rows, err := db.Query(query)
 	if err != nil {
 		fmt.Printf("TicketDataModel: %v", err)
+		return
 	}
 	for rows.Next() {
-		if err := rows.Scan(&passenger.NumberOfPassengers, &passenger.TotalPrice, &passenger.Class, &passenger.DepPlace, &passenger.Date); err != nil {
+		if err := rows.Scan(&ticketdata.NumberOfTickets, &ticketdata.Class, &ticketdata.DepPlace, &ticketdata.Date); err != nil {
 			fmt.Printf("TicketDataModel: %v", err)
+			return
 		}
-		passengers = append(passengers, passenger)
+		ticketdatas = append(ticketdatas, ticketdata)
 	}
 	if err := rows.Err(); err != nil {
 		fmt.Printf("TicketDataModel: %v", err)
+		return
 	}
-	json.NewEncoder(w).Encode(passengers)
+	json.NewEncoder(w).Encode(ticketdatas)
 }
