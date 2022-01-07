@@ -1,0 +1,122 @@
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	var user User
+	res, _ := ioutil.ReadAll(r.Body)
+	json.Unmarshal(res, &user)
+
+	_, err := db.Exec("DELETE FROM user WHERE id = ?", user.ID)
+	if err != nil {
+		fmt.Printf("DeleteUser: %v", err)
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	var user User
+	res, _ := ioutil.ReadAll(r.Body)
+	json.Unmarshal(res, &user)
+	fmt.Println(user)
+	hashedPassword, err := HashPassword(user.Password)
+	if err != nil {
+		fmt.Printf("UpdatePassword: %v", err)
+	}
+	fmt.Println(hashedPassword)
+	_, err = db.Exec("UPDATE user SET pwd = ? WHERE email = ?", hashedPassword, user.Email)
+	if err != nil {
+		fmt.Printf("UpdatePassword: %v", err)
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func Dashboard(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("token")
+	if err != nil {
+		fmt.Printf("Home: %v", err)
+	}
+	tokenStr := cookie.Value
+	claims := &Claims{}
+
+	tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		fmt.Printf("Home: %v", err)
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	fmt.Println(claims.Email)
+	w.Write([]byte(fmt.Sprintf("Hello %s", claims.Email)))
+}
+
+
+func GetUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	var users []User
+
+	rows, err := db.Query("SELECT * FROM user")
+	if err != nil {
+		fmt.Printf("GetUsers: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.Email, &user.Username, &user.Password); err != nil {
+			fmt.Printf("GetUsers: %v", err)
+		}
+		users = append(users, user)
+	}
+	if err := rows.Err(); err != nil {
+		fmt.Printf("GetUsers: %v", err)
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(users)
+}
+
+
+// func UserHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+// 	w.Header().Set("Access-Control-Allow-Credentials", "true")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type,access-control-allow-origin, access-control-allow-headers")
+// 	w.WriteHeader(http.StatusOK)
+// 	switch r.Method {
+// 	case http.MethodGet:
+// 		GetUsers(w, r)
+// 	case http.MethodPost:
+// 		CreateUser(w, r)
+// 	case http.MethodDelete:
+// 		DeleteUser(w, r)
+// 	case http.MethodPatch:
+// 		UpdatePassword(w, r)
+// 	default:
+// 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+// 	}
+// }
+
+// func PassengersPerDate() ([]PassengersPerDate, error) {
+// 	var passengerPerDate PassengersPerDate
+// 	var passengersPersDate []PassengersPerDate
+// 	query := `
+// 	SELECT COUNT(p.passenger_id), DATE(f.dep_time) FROM passenger AS p
+// 	INNER JOIN ticket AS t ON t.ticket_id = p.ticket_id
+// 	INNER JOIN flight AS f ON t.flight_id = f.flight_id
+// 	GROUP BY DATE(f.dep_time)
+// 	`
+// 	rows, err := db.Query(query)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	fmt.Println(rows)
+// 	for rows.Next() {
+// 		if err := rows.Scan(&passengerPerDate.NumberOfPassengers, &passengerPerDate.Date); err != nil {
+// 			return nil, err
+// 		}
+// 		passengersPersDate = append(passengersPersDate, passengerPerDate)
+// 	}
+// 	if err := rows.Err(); err != nil {
+// 		return nil, err
+// 	}
+// 	return passengersPersDate, nil
+// }
