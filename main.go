@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 	"github.com/golang-jwt/jwt"
 	"github.com/julienschmidt/httprouter"
 
@@ -23,19 +23,16 @@ var jwtKey = []byte("secret_key")
 
 func main() {
 	// Capture connection properties.
-	// cfg := mysql.Config{
-	// 	User:   os.Getenv("DBUSER"),
-	// 	Passwd: os.Getenv("DBPASS"),
-	// 	Net:    "tcp",
-	// 	Addr:   "127.0.0.1:3306",
-	// 	DBName: "airline",
-	// }
-
-	dns := os.Getenv("DATABASE_URL")
-
+	cfg := mysql.Config{
+		User:   os.Getenv("DBUSER"),
+		Passwd: os.Getenv("DBPASS"),
+		Net:    "tcp",
+		Addr:   "127.0.0.1:3306",
+		DBName: "airline",
+	}
 	// Get a database handle.
 	var err error
-	db, err = sql.Open("mysql", dns)
+	db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,16 +59,16 @@ func main() {
 	r.POST("/sign-up", SignUp)
 	r.POST("/login", Login)
 	r.GET("/authUser", AuthUser)
-	r.GET("/passengerData", PassengersPerDate)
-	r.GET("/passengerData/:date", PassengersPerDay)
+	r.GET("/ticketData", GetTicketData)
+	r.GET("/ticketData/:date", GetTicketDataPerDate)
 
-	// if err := http.ListenAndServe(":8080", r); err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	if err := http.ListenAndServe(":"+os.Getenv("PORT"), r); err != nil {
+	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
 	}
+
+	// if err := http.ListenAndServe(":"+os.Getenv("PORT"), r); err != nil {
+	// 	log.Fatal(err)
+	// }
 
 }
 
@@ -178,7 +175,7 @@ func CORS(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func PassengersPerDate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func GetTicketData(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	CORS(w, r)
 	var passenger model.PassengersPerDate
 	var passengers []model.PassengersPerDate
@@ -204,7 +201,7 @@ func PassengersPerDate(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	json.NewEncoder(w).Encode(passengers)
 }
 
-func PassengersPerDay(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func GetTicketDataPerDate(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	CORS(w, r)
 	date := ps.ByName("date")
 	fmt.Println(date)
