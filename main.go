@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"main/model"
-	"main/utils"
 	"net/http"
 	"os"
 	"time"
@@ -14,6 +12,9 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/golang-jwt/jwt"
 	"github.com/julienschmidt/httprouter"
+
+	"github.com/EnesToraman/Go-KPI-Dashboard/model"
+	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
 )
 
 var db *sql.DB
@@ -61,9 +62,14 @@ func main() {
 	r.GET("/passengerData", PassengersPerDate)
 	r.GET("/passengerData/:date", PassengersPerDay)
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	// if err := http.ListenAndServe(":8080", r); err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	if err := http.ListenAndServe(":"+os.Getenv("PORT"), r); err != nil {
 		log.Fatal(err)
 	}
+
 }
 
 func SignUp(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

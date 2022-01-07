@@ -1,5 +1,6 @@
-module main
+module github.com/EnesToraman/Go-KPI-Dashboard
 
+// +heroku goVersion go1.17
 go 1.17
 
 require (
