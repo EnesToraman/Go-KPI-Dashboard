@@ -4,10 +4,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/EnesToraman/Go-KPI-Dashboard/model"
-	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
 	"github.com/golang-jwt/jwt"
 	"github.com/julienschmidt/httprouter"
+
+	"github.com/EnesToraman/Go-KPI-Dashboard/model"
+	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
 )
 
 // AuthUser checks whether request token is valid or not, if so, returns claims.

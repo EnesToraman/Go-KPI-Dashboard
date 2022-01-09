@@ -7,11 +7,12 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-jwt/jwt"
+	"github.com/julienschmidt/httprouter"
+
 	"github.com/EnesToraman/Go-KPI-Dashboard/model"
 	"github.com/EnesToraman/Go-KPI-Dashboard/repository"
 	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
-	"github.com/golang-jwt/jwt"
-	"github.com/julienschmidt/httprouter"
 )
 
 type UserController struct{}

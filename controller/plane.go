@@ -4,10 +4,11 @@ import (
 	"database/sql"
 	"net/http"
 
+	"github.com/julienschmidt/httprouter"
+
 	"github.com/EnesToraman/Go-KPI-Dashboard/model"
 	"github.com/EnesToraman/Go-KPI-Dashboard/repository"
 	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
-	"github.com/julienschmidt/httprouter"
 )
 
 type PlaneController struct{}

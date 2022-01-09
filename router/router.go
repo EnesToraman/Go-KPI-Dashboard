@@ -3,9 +3,10 @@ package router
 import (
 	"net/http"
 
+	"github.com/julienschmidt/httprouter"
+
 	"github.com/EnesToraman/Go-KPI-Dashboard/controller"
 	"github.com/EnesToraman/Go-KPI-Dashboard/driver"
-	"github.com/julienschmidt/httprouter"
 )
 
 func New() *httprouter.Router {

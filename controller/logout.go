@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
 	"github.com/julienschmidt/httprouter"
+
+	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
 )
 
 // Logout sets the token value to empty.
