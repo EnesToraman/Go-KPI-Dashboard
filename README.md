@@ -8,4 +8,4 @@ https://github.com/EnesToraman/React-KPI-Dashboard
 
 ### Database Schema:
 
-![Database Schema](/sql-script/database-schema)
+![Database Schema](/sql-script/database-schema.png)
