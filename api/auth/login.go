@@ -18,30 +18,31 @@ import (
 func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	config.CORS(w, r)
 	var credentials model.Credentials
+	query := `
+	SELECT hashed_password, role FROM user
+	WHERE email = ?
+	`
 	err := json.NewDecoder(r.Body).Decode(&credentials)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		utils.RespondWithError(err, http.StatusBadRequest, w)
 	}
 	email := credentials.Email
 	password := credentials.Password
 
 	db := config.DB()
 	defer db.Close()
-	row := db.QueryRow("SELECT hashed_password, role FROM user WHERE email = ?", email)
+	row := db.QueryRow(query, email)
 	var hashedPassword string
 	var role string
 	err = row.Scan(&hashedPassword, &role)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
+		utils.RespondWithError(err, http.StatusBadRequest, w)
 	}
 	err = utils.CheckPassword(password, hashedPassword)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
+		utils.RespondWithError(err, http.StatusUnauthorized, w)
 	}
-	expirationTime := time.Now().Add(time.Minute * 60)
+	expirationTime := time.Now().Add(time.Hour * 24)
 
 	claims := &model.Claims{
 		Email: credentials.Email,
@@ -53,8 +54,7 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWTKEY")))
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		utils.RespondWithError(err, http.StatusInternalServerError, w)
 	}
 	http.SetCookie(w, &http.Cookie{
 		Name:     "token",

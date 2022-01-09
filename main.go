@@ -1,16 +1,15 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/EnesToraman/Go-KPI-Dashboard/router"
+	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
 )
 
 func main() {
 
 	r := router.New()
-	if err := http.ListenAndServe(":8080", r); err != nil {
-		log.Fatal(err)
-	}
+	err := http.ListenAndServe(":8080", r)
+	utils.CheckError(err)
 }

@@ -10,7 +10,7 @@ import (
 
 func New() *httprouter.Router {
 	r := httprouter.New()
-	// Configure for pre-flight requests.
+	// Configuration for pre-flight requests.
 	r.GlobalOPTIONS = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Access-Control-Request-Method") != "" {
 			header := w.Header()
@@ -32,7 +32,12 @@ func Routes(r *httprouter.Router) {
 	r.GET("/authUser", auth.AuthUser)
 	r.POST("/logout", auth.Logout)
 
-	r.POST("/sign-up", api.SignUp)
+	r.POST("/signUp", api.SignUp)
 	r.GET("/ticketData", api.GetTicketData)
-
+	r.GET("/getRevenue", api.GetRevenue)
+	r.GET("/getAverageTicketPrice", api.GetAverageTicketPrice)
+	r.GET("/getTicketClass", api.GetTicketClass)
+	r.GET("/getEmployeeTitle", api.GetEmployeeTitle)
+	r.GET("/getPlanes", api.GetPlanes)
+	r.GET("/getEmployeeSalary", api.GetEmployeeSalary)
 }

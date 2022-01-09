@@ -15,3 +15,13 @@ type TicketDataModel struct {
 	DepPlace        string `json:"depPlace"`
 	Date            string `json:"date"`
 }
+
+type TicketDTO struct {
+	Date    string `json:"date"`
+	Revenue int    `json:"totalPrice"`
+}
+
+type TicketClassDTO struct {
+	Class           string `json:"class"`
+	NumberOfTickets int    `json:"numberOfTickets"`
+}

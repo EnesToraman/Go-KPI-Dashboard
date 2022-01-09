@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -16,23 +15,25 @@ import (
 func SignUp(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	config.CORS(w, r)
 	var user model.User
+	query := `
+	INSERT INTO user (email, hashed_password, role) 
+	VALUES (?, ?, 'STAFF')
+	`
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		utils.RespondWithError(err, http.StatusBadRequest, w)
 	}
 	pwd := user.Password
 	email := user.Email
 	hashedPassword, err := utils.HashPassword(pwd)
 	if err != nil {
-		fmt.Printf("CreateUser: %v", err)
-		return
+		utils.RespondWithError(err, http.StatusInternalServerError, w)
 	}
 
 	db := config.DB()
-	_, err2 := db.Exec("INSERT INTO user (email, hashed_password, role) VALUES (?, ?, 'STAFF')", email, hashedPassword)
-	if err2 != nil {
-		fmt.Printf("CreateUser: %v", err2)
-		return
+	res, err := db.Exec(query, email, hashedPassword)
+	if err != nil {
+		utils.RespondWithError(err, http.StatusInternalServerError, w)
 	}
+	utils.RespondWithSuccess(res, w)
 }
