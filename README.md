@@ -5,7 +5,7 @@ Project's React based frontend application is accesible via URL below:
 
 https://github.com/EnesToraman/React-KPI-Dashboard
 
-[github.com/EnesToraman/React-KPI-Dashboard](https://github.com/EnesToraman/React-KPI-Dashboard)
+[React-KPI-Dashboard](https://github.com/EnesToraman/React-KPI-Dashboard)
 
 ### Database Schema:
 
