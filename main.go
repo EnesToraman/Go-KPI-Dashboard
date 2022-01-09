@@ -8,8 +8,7 @@ import (
 )
 
 func main() {
-
-	r := router.New()
-	err := http.ListenAndServe(":8080", r)
+	router := router.New()
+	err := http.ListenAndServe(":8080", router)
 	utils.CheckError(err)
 }
