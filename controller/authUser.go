@@ -1,10 +1,9 @@
-package auth
+package controller
 
 import (
 	"net/http"
 	"os"
 
-	"github.com/EnesToraman/Go-KPI-Dashboard/config"
 	"github.com/EnesToraman/Go-KPI-Dashboard/model"
 	"github.com/EnesToraman/Go-KPI-Dashboard/utils"
 	"github.com/golang-jwt/jwt"
@@ -13,7 +12,7 @@ import (
 
 // AuthUser checks whether request token is valid or not, if so, returns claims.
 func AuthUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	config.CORS(w, r)
+	utils.CORS(w, r)
 	cookie, err := r.Cookie("token")
 	if err != nil {
 		utils.RespondWithError(err, http.StatusBadRequest, w)

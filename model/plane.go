@@ -7,7 +7,7 @@ type Plane struct {
 	Capacity    int    `json:"capacity"`
 }
 
-type PlaneDTO struct {
+type PlaneCountGroupByAirlineDTO struct {
 	AirlineName    string `json:"airlineName"`
 	NumberOfPlanes int    `json:"numberOfPlanes"`
 }

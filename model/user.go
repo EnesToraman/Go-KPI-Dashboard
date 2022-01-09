@@ -6,3 +6,13 @@ type User struct {
 	Password string `json:"password"`
 	Role     string `json:"role"`
 }
+
+type UserCredentialsDTO struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type UserEmailRoleDTO struct {
+	Email string `json:"email"`
+	Role  string `json:"role"`
+}

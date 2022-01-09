@@ -9,12 +9,13 @@ type Employee struct {
 	Salary  int    `json:"salary"`
 }
 
-type EmployeeDTO struct {
+type EmployeeCountGroupByTitleDTO struct {
 	Title             string `json:"title"`
 	NumberOfEmployees int    `json:"numberOfEmployees"`
 }
 
-type EmployeeSalary struct {
+// EmployeeSalaryByTitle
+type EmployeeAverageSalaryGroupByTitleDTO struct {
 	Title     string `json:"title"`
 	AvgSalary int    `json:"salary"`
 }

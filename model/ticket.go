@@ -9,19 +9,24 @@ type Ticket struct {
 	Price        int    `json:"price"`
 }
 
-type TicketDataModel struct {
+type TicketCountGroupByDateDTO struct {
 	NumberOfTickets int    `json:"numberOfPassengers"`
 	Class           string `json:"class"`
 	DepPlace        string `json:"depPlace"`
 	Date            string `json:"date"`
 }
 
-type TicketDTO struct {
+type TicketTotalPriceGroupByDateDTO struct {
 	Date    string `json:"date"`
 	Revenue int    `json:"totalPrice"`
 }
 
-type TicketClassDTO struct {
+type TicketAveragePriceGroupByDateDTO struct {
+	Date     string `json:"date"`
+	AvgPrice string `json:"avgPrice"`
+}
+
+type TicketCountGroupByClassDTO struct {
 	Class           string `json:"class"`
 	NumberOfTickets int    `json:"numberOfTickets"`
 }

@@ -3,8 +3,8 @@ package router
 import (
 	"net/http"
 
-	"github.com/EnesToraman/Go-KPI-Dashboard/api"
-	"github.com/EnesToraman/Go-KPI-Dashboard/api/auth"
+	"github.com/EnesToraman/Go-KPI-Dashboard/controller"
+	"github.com/EnesToraman/Go-KPI-Dashboard/driver"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -22,22 +22,28 @@ func New() *httprouter.Router {
 		}
 		w.WriteHeader(http.StatusNoContent)
 	})
-	Routes(r)
+	InitRoutes(r)
 	return r
 }
 
-func Routes(r *httprouter.Router) {
-	// Endpoints for authentication and authorization process
-	r.POST("/login", auth.Login)
-	r.GET("/authUser", auth.AuthUser)
-	r.POST("/logout", auth.Logout)
+func InitRoutes(r *httprouter.Router) {
+	db := driver.DB()
+	ec := controller.EmployeeController{}
+	tc := controller.TicketController{}
+	pc := controller.PlaneController{}
+	uc := controller.UserController{}
 
-	r.POST("/signUp", api.SignUp)
-	r.GET("/ticketData", api.GetTicketData)
-	r.GET("/getRevenue", api.GetRevenue)
-	r.GET("/getAverageTicketPrice", api.GetAverageTicketPrice)
-	r.GET("/getTicketClass", api.GetTicketClass)
-	r.GET("/getEmployeeTitle", api.GetEmployeeTitle)
-	r.GET("/getPlanes", api.GetPlanes)
-	r.GET("/getEmployeeSalary", api.GetEmployeeSalary)
+	// Endpoints for authentication and authorization process
+	r.POST("/login", uc.Login(db))
+	r.GET("/authUser", controller.AuthUser)
+	r.POST("/logout", controller.Logout)
+
+	r.POST("/signUp", uc.CreateUser(db))
+	r.GET("/ticketCountGroupByDate", tc.GetTicketCountGroupByDate(db))
+	r.GET("/totalPriceGroupByDate", tc.GetTotalPriceGroupByDate(db))
+	r.GET("/averageTicketPriceGroupByDate", tc.GetTicketAveragePriceGroupByDate(db))
+	r.GET("/ticketCountGroupByClass", tc.GetTicketCountGroupByClass(db))
+	r.GET("/employeeCountGroupByTitle", ec.GetEmployeeCountGroupByTitle(db))
+	r.GET("/employeeAverageSalaryGroupByTitle", ec.GetEmployeeAverageSalaryGroupByTitle(db))
+	r.GET("/planeCountGroupByAirline", pc.GetPlaneCountGroupByAirline(db))
 }
